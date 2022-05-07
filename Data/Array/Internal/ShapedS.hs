@@ -62,6 +62,7 @@ import qualified Data.Array.Internal.Shaped as S
 import qualified Data.Array.Internal.ShapedG as G
 import Data.Array.Internal(ShapeL, Vector)
 import Data.Array.Internal.Shape
+import Data.Array.Internal (values)
 
 type Unbox = V.Storable
 
@@ -120,8 +121,9 @@ fromList = A . G.fromList
 
 -- | Convert to a vector with the elements in the linearization order.
 -- O(n) or O(1) time (the latter if the vector is already in the linearization order).
-toVector :: (Unbox a, Shape sh) => Array sh a -> V.Vector a
-toVector = G.toVector . unA
+toVector :: Shape sh => Array sh a -> V.Vector a
+toVector a = case unA a of
+  G.A t -> values t
 
 -- | Convert from a vector with the elements given in the linearization order.
 -- Fails if the given shape does not have the same number of elements as the list.
